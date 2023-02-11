@@ -2,25 +2,7 @@ package com.game.tictactoegame;
 
 import java.util.Scanner;
 
-public class CommunicateAndDisplay {
-
-//    public Player symbolChoice() {
-//        Scanner scanner = new Scanner(System.in);
-//        boolean correct = false;
-//        System.out.println("Choose your symbol [X/O]");
-//        String choice = scanner.next();
-//        while (!correct) {
-//            if (choice.equalsIgnoreCase("x")) {
-//                correct = true;
-//            } else if (choice.equalsIgnoreCase("o")) {
-//                correct = true;
-//            } else {
-//                System.out.println("You've entered a wrong value! Choose: X or O?");
-//                choice = scanner.next();
-//            }
-//        }
-//        return new Player(choice);
-//    }
+public class GameDisplay {
 
     public String[][] boardSizeChoice() {
         Scanner scanner = new Scanner(System.in);
@@ -36,16 +18,17 @@ public class CommunicateAndDisplay {
     public int numberOfPlayersChoice() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choose opponent: [1 - computer/2 - another player]");
-        int choice = scanner.nextInt();
+        String choice = scanner.next();
         boolean opponent = false;
         while (!opponent) {
-            if (choice == 1 || choice == 2) {
+            if (choice.equals("1") || choice.equals("2")) {
                 opponent = true;
             } else {
-                System.out.println("You've entered a wrong value! Press 1 for computer or 2 for another player.");
+                System.out.println("You've entered a wrong value! Insert 1 for computer or 2 for another player.");
+                choice = scanner.next();
             }
         }
-        if (choice == 2) {
+        if (choice.equals("2")) {
             return 2;
         } else {
             return 1;
@@ -58,6 +41,27 @@ public class CommunicateAndDisplay {
                 System.out.print("|" + gameBoard[i][j]);
             }
             System.out.println("|");
+        }
+    }
+
+    public void fieldChoice(String[][] board, Player player) {
+        Scanner scanner = new Scanner(System.in);
+        BackgroundLogic backgroundLogic = new BackgroundLogic();
+        boolean used = true;
+        while (used) {
+            System.out.println("Select a row");
+            int row = scanner.nextInt();
+            int rowMove = checkAnswer(row, board);
+            System.out.println("Select a column");
+            int column = scanner.nextInt();
+            int columnMove = checkAnswer(column, board);
+            used = backgroundLogic.isUsed(rowMove, columnMove, board);
+            if (used) {
+                System.out.println("This field is already in use! Please try another one");
+            } else {
+                player.playerMove(rowMove, columnMove, board);
+                boardDisplay(board);
+            }
         }
     }
 
@@ -96,27 +100,6 @@ public class CommunicateAndDisplay {
         return false;
     }
 
-    public void fieldChoice(String[][] board, Player player) {
-        Scanner scanner = new Scanner(System.in);
-        BackgroundLogic backgroundLogic = new BackgroundLogic();
-        boolean used = true;
-        while (used) {
-            System.out.println("Select a row");
-            int row = scanner.nextInt();
-            int rowMove = checkAnswer(row, board);
-            System.out.println("Select a column");
-            int column = scanner.nextInt();
-            int columnMove = checkAnswer(column, board);
-            used = backgroundLogic.isUsed(rowMove, columnMove, board);
-            if (used) {
-                System.out.println("This field is already in use! Please try another one");
-            } else {
-                player.playerMove(rowMove, columnMove, board);
-                boardDisplay(board);
-            }
-        }
-    }
-
     public void gameplay() {
         BackgroundLogic backgroundLogic = new BackgroundLogic();
         Scanner scanner = new Scanner(System.in);
@@ -141,8 +124,6 @@ public class CommunicateAndDisplay {
                     Player player2 = new Player("O");
                     System.out.println("Player2 move");
                     fieldChoice(playingBoard, player2);
-
-
                 }
                 win = isWin(playingBoard);
             }
@@ -160,11 +141,6 @@ public class CommunicateAndDisplay {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        CommunicateAndDisplay communicateAndDisplay = new CommunicateAndDisplay();
-        communicateAndDisplay.gameplay();
     }
 }
 
